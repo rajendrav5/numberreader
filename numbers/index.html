@@ -1,0 +1,131 @@
+<html>
+    <head>
+        <script src="./js/jquery.min.js"></script>
+        <script src="./js/materialize.min.js"></script> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <style>
+            @font-face {
+                font-family: toys;
+                src: url('./vampire/font.ttf');
+            }
+            .container{
+                width: 100%;
+                margin: auto;
+                text-align: center;
+                min-height: 60vh;
+            }
+            #number{
+                min-height: 40vh;
+                background:center / contain no-repeat url('./bg.jpeg');
+                font-family: toys;
+                font-size: 100px;
+                font-weight: 400;
+                line-height: 50vh;
+                color: aqua;
+            }
+            .color1{
+                color: #A8DA4A;
+            }
+            .button{
+                width: 40%;
+                font-size: 80px;
+                font-weight: bold;
+                border: none;
+                box-shadow: 0px 10px 13px -7px #000000;
+            }
+            .button:active {
+                background-color: #3e8e41;
+                box-shadow: 0 5px #666;
+                transform: translateY(4px);
+            }
+            .inc {
+                background-color: #75c700;
+            }
+            .dec{
+                background-color: #f79200;
+            }
+            .btnwrapper{
+                width: 80%;
+                margin: auto;
+            }
+            .speaker{
+                font-family: toys;
+                padding: 10px;
+                font-family: toys;
+                /* border-radius: 50%; */
+                background-color: aquamarine;
+                width: 80%;
+                margin: 20px auto;
+                font-size: 28px;
+                box-shadow: 0 5px #666;
+            }
+            .speaker:active {
+                box-shadow: 0 5px #666;
+                transform: translateY(4px);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div id='number'>0</div>
+            <div id='speak' class="speaker">speak</div>
+            <div class="btnwrapper">
+                <button class='button dec' id='decrease'>-</button>
+                <button class='button inc' id='increase'>+</button>
+            </div>
+        </div>
+    </body>
+    <script>
+        var num = 0;
+        const container = document.getElementById('number');
+        document.getElementById('increase').addEventListener('click', ()=>{
+            num++;
+            container.innerHTML = num;
+        });
+        document.getElementById('decrease').addEventListener('click', ()=>{
+            if ((num- 1) > -1){
+                num = num-1;
+                container.innerHTML = num;
+            }
+        });
+    </script>
+    <script>
+        $(function(){
+  if ('speechSynthesis' in window) {
+    speechSynthesis.onvoiceschanged = function() {
+      var $voicelist = $('#voices');
+
+      if($voicelist.find('option').length == 0) {
+        speechSynthesis.getVoices().forEach(function(voice, index) {
+          var $option = $('<option>')
+          .val(index)
+          .html(voice.name + (voice.default ? ' (default)' :''));
+
+          $voicelist.append($option);
+        });
+
+        $voicelist.material_select();
+      }
+    }
+
+    $('#increase, #decrease, #speak').click(function(){
+        var text = $('#number').html();
+      var msg = new SpeechSynthesisUtterance();
+      var voices = window.speechSynthesis.getVoices();
+      msg.voice = voices[40];
+      msg.rate = 100 / 10;
+      msg.pitch = 1;
+      msg.text = text;
+
+      msg.onend = function(e) {
+        // console.log('Finished in ' + event.elapsedTime + ' seconds.');
+      };
+
+      speechSynthesis.speak(msg);
+    })
+  } else {
+    $('#modal1').openModal();
+  }
+});
+    </script>
+</html>
